@@ -20,34 +20,40 @@ This project intend to reproduce the UOL-chat experience. It's a challenge-exerc
 #+begin_src html :tangle ./code/html/index.html :mkdirp yes
   <!DOCTYPE html>
   <html lang="en">
-    <head>
+
+  <head>
       <meta charset="utf-8">
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
       <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link href="../css/chat.css" rel="stylesheet"/>
       <title>uol</title>
-      </head>
+  </head>
 #+end_src
 
 ** Body
 *** Menu
 #+begin_src html :tangle ./code/html/index.html
   <body>
-    <div class="menu">
-      <div class="menu-logo"></div>
-      <div class="menu-chat"></div>
-    </div>
+    <div class="project-container">
+      <div class="menu">
+        <div class="menu-logo"></div>
+        <div class="menu-chat"></div>
+      </div>
     #+end_src
 
 *** Chat body
 #+begin_src html :tangle ./code/html/index.html
-  <div class="chat"></div>
+  <div class="chat">dasdas</div>
 #+end_src
 
 *** Send-message foot
 #+begin_src html :tangle ./code/html/index.html
   <div class="foot">
-    <div class="message"></div>
-    <div class="send"></div>
+      dasdasdas
+      <div class="message">adasdas</div>
+      <div class="send">dasdsa</div>
+  </div>
+
   </div>
   </body>
 
@@ -56,7 +62,85 @@ This project intend to reproduce the UOL-chat experience. It's a challenge-exerc
 
 * CSS
 ** Chat-page layout
+*** Body
+#+begin_src css :tangle ./code/css/chat.css :mkdirp yes
+  body {
+      background-color: whitesmoke;
+      display: flex;
+      align-content: center;
+      z-index:-1;
+  }
+
+  .project-container {
+      background-color: #E5E5E5;
+      display: flex;
+      margin: 30px auto 0 auto;
+      width: 375px;
+      height: 667px;
+      position: relative;
+  }
+#+end_src
+
 *** Header
 #+begin_src css :tangle ./code/css/chat.css :mkdirp yes
+  .menu {
+      position: absolute;
+      display: flex;
+      flex: wrap;
+      justify-concent: space-between;
+      align-items: center;
+      /* border: 1px solid #c3c3c3; */
+      height: 80px;
+      width: 100%;
+      background-color: #FFFFFF;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.05);
+  }
 
+  .menu .menu-logo {
+      height: 53px;
+      width: 75px;
+      margin: 16px auto 11px 22px;
+      display: inline-block;
+      background-image: url("../../content/icon/logoUOL.png");
+  }
+
+  .menu .menu-chat {
+      height: 31px;
+      width: 42px;
+      margin: 25px 22.5px 24px auto;
+      display: inline-block;
+      background-image: url("../../content/icon/people.png");
+  }
+#+end_src
+
+*** Chat-body
+#+begin_src css :tangle ./code/css/chat.css :mkdirp yes
+  .chat p* {
+      border-radius: 2px;
+  }
+
+  .chat p#event {
+      background-color: #DCDCDC;
+  }
+
+  .chat p#all {
+      background-color: #FFF;
+  }
+
+  .chat p#private {
+      background: #FFDEDE;
+  }
+#+end_src
+
+*** Foot 
+
+#+begin_src css :tangle ./code/css/chat.css :mkdirp yes
+  .foot {
+      left:0;
+      bottom:0;
+      width: 375px;
+      height: 80px;
+      background-color: #fff;
+      box-shadow: 0px -4px 6px rgb(0, 0, 0, 0.05);
+  }
 #+end_src
