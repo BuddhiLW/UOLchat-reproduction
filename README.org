@@ -25,7 +25,9 @@ This project intend to reproduce the UOL-chat experience. It's a challenge-exerc
       <meta charset="utf-8">
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
       <meta name="viewport" content="width=device-width, initial-scale=1">
-      <link href="../css/chat.css" rel="stylesheet"/>
+      <link href="../css/chat.css" rel="stylesheet" />
+      <link rel="preconnect" href="https://fonts.gstatic.com">
+      <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
       <title>uol</title>
   </head>
 #+end_src
@@ -43,20 +45,21 @@ This project intend to reproduce the UOL-chat experience. It's a challenge-exerc
 
 *** Chat body
 #+begin_src html :tangle ./code/html/index.html
-  <div class="chat">dasdas</div>
+  <div class="chat"></div>
 #+end_src
 
 *** Send-message foot
 #+begin_src html :tangle ./code/html/index.html
   <div class="foot">
-      dasdasdas
-      <div class="message">adasdas</div>
-      <div class="send">dasdsa</div>
+    <input class="message" type="text" placeholder="Let's chat!">
+    <div class="send">
+      <ion-icon name="send"></ion-icon>
+    </div>
   </div>
 
   </div>
+  <script src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>
   </body>
-
   </html>
 #+end_src
 
@@ -68,7 +71,8 @@ This project intend to reproduce the UOL-chat experience. It's a challenge-exerc
       background-color: whitesmoke;
       display: flex;
       align-content: center;
-      z-index:-1;
+      z-index: -1;
+      font-family: 'Roboto', sans-serif;
   }
 
   .project-container {
@@ -136,11 +140,36 @@ This project intend to reproduce the UOL-chat experience. It's a challenge-exerc
 
 #+begin_src css :tangle ./code/css/chat.css :mkdirp yes
   .foot {
-      left:0;
-      bottom:0;
-      width: 375px;
+      left: 0;
+      bottom: 0;
+      position: absolute;
+      display: flex;
+      flex: wrap;
+      justify-concent: space-between;
+      align-items: center;
+      width: 100%;
       height: 80px;
       background-color: #fff;
       box-shadow: 0px -4px 6px rgb(0, 0, 0, 0.05);
+  }
+  .foot ::placeholder{
+      font-style: italic;
+      font-weight: 400;
+      color: #000;
+  }
+
+  .foot .message {
+      height: 53px;
+      width: calc(100% - 26px - 25px - 27px);
+      margin: 25px 14px 25px 17px;
+      display: inline-block;
+  }
+
+
+  .foot .send ion-icon {
+      height: 26px;
+      width: 26px;
+      margin: 27px 18px 27px 14px;
+      display: inline-block;
   }
 #+end_src
