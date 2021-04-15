@@ -61,6 +61,7 @@ li {
     height: 40px;
     border-radius: 2px;
     display: flex;
+    flex-wrap: wrap;
     font-size: 14px;
     line-height: 16px;
     align-items: center;
@@ -73,20 +74,20 @@ li:first-of-type {
     margin-top: 26px;
 }
 
-li.event {
+li.status {
     background-color: #DCDCDC;
 }
 
-li.all {
+li.message {
     background-color: #FFF;
 }
 
-li.private {
+li.private_message {
     background: #FFDEDE;
 }
 
-li span{
-    margin-left:3px;
+li span {
+    margin-left: 3px;
     margin-right: 0px;
 }
 

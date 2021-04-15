@@ -25,20 +25,22 @@ This project intend to reproduce the UOL-chat experience. It's a challenge-exerc
   var cons = e => c => e.classList.add(c);
 #+end_src
 ** Populate chat
-*** Populate [string -> html]
+*** Populate [obj-> html]
 We are imagining that the message is purely a string-type message. So, our populate-function will be expecting that.
 
 #+begin_src js ./code/js/website-logic.js :mkdirp yes
   let createMsg = message => document.createTextNode(message);
-  let appendMsgNode = e => nodeMessage => e.appendChild(nodeMessage);  
-  let populate = message =>
+  // let appendMsgNode = e => nodeMessage => e.appendChild(nodeMessage);  
+  let populate = obj =>
       {let li = createElement('li');
-       appendMsgNode(li)(createMsg(message));
+       let list = mapKeys(obj);
+       msgClass(li)(list[3]);
+       orderAppendMsg(li)(list);
        chat.appendChild(li);
       };
 #+end_src
 
-*** Load page
+*** Load page messages
 **** Requirements doc
 Requirement: =Ao entrar no site, este deve carregar as mensagens do servidor e exibi-las conforme layout fornecido.=
 #+caption: Load messages request documentation
@@ -56,6 +58,8 @@ Requirement: =Ao entrar no site, este deve carregar as mensagens do servidor e e
   let keys = obj => Object.keys(obj);
   let dataPerform = data => {console.log(keys(data.data[0]));
                              console.log(data.data[0]);
+                             console.log(mapKeys(data.data[0]));
+                             populate(data.data[0]);
                             };
   let errorHandle = error => console.log(error);
   handleChat('https://mock-api.bootcamp.respondeai.com.br/api/v2/uol/messages');
@@ -64,6 +68,7 @@ Requirement: =Ao entrar no site, este deve carregar as mensagens do servidor e e
 **** Generate span with id
 #+begin_src js 
   let assignId = e => identity => e.id = `${identity}`;
+  let assignClass = e => c => e.classList.add(c);
   let spanNodeId = id =>
       {let span = createElement('span');
        assignId(span)(id);
@@ -75,19 +80,42 @@ Requirement: =Ao entrar no site, este deve carregar as mensagens do servidor e e
        populateNode(span)(content);
        return span;
       };
+  let spanNodeClass = c =>
+      {let span = createElement('span');
+       assignClass(span)(c);
+       return span;
+      };
+  let createContentClass = c => content =>
+      {let span = spanNodeClass(c);
+       populateNode(span)(content);
+       return span;
+      };
 #+end_src
 
 **** Span for each msgKey
 #+begin_src js
-  let add = a => b => a+b;
   let mapKeys = object => {
       newList = [];
-      Object.entries(object).forEach(e => newList.push(createContent(e[0])(e[1])));
+      Object.entries(object).forEach(e => newList.push(createContentClass(e[0])(e[1])));
       return newList;
   };
 #+end_src
 
 **** Reduce the list of spans to a usable string
+#+begin_src js 
+  let orderAppendMsg = li => list =>
+      {li.innerHTML += "(";
+       li.appendChild(list[4]);
+       li.innerHTML +=")";
+       li.appendChild(list[0]);
+       li.innerHTML += "&nbsp; para";
+       li.appendChild(list[1]);
+       li.innerHTML += ":";
+       li.appendChild(list[2]);
+      };
+#+end_src
+
+**** Caracterize the message type, and assign a class to the =li= father
 #+begin_src js 
 
 #+end_src
@@ -124,9 +152,9 @@ Requirement: =Ao entrar no site, este deve carregar as mensagens do servidor e e
 *** Chat body
 #+begin_src html :tangle ./code/html/index.html
   <ul class="chat">
-      <li class="event">event mensagem</li>
-      <li class="all"> <span class="time">(09:22:28)</span> <span class="sender">João</span> <span class="to">para</span> <span class="recipient">Todos</span>: Bom dia</li>
-      <li class="private">private message</li>
+      <li class="status">event mensagem</li>
+      <li class="message" > <span class="time">(09:22:28)</span> <span class="sender">João</span> <span class="to">para</span> <span class="recipient">Todos</span>: Bom dia</li>
+      <li class="private_message">private message</li>
   </ul>
 #+end_src
 
@@ -221,6 +249,7 @@ Requirement: =Ao entrar no site, este deve carregar as mensagens do servidor e e
       height: 40px;
       border-radius: 2px;
       display: flex;
+      flex-wrap: wrap;
       font-size: 14px;
       line-height: 16px;
       align-items: center;
@@ -233,24 +262,23 @@ Requirement: =Ao entrar no site, este deve carregar as mensagens do servidor e e
       margin-top: 26px;
   }
 
-  li.event {
+  li.status {
       background-color: #DCDCDC;
   }
 
-  li.all {
+  li.message {
       background-color: #FFF;
   }
 
-  li.private {
+  li.private_message {
       background: #FFDEDE;
   }
 
-  li span{
-      margin-left:3px;
+  li span {
+      margin-left: 3px;
       margin-right: 0px;
   }
 #+end_src
-
 *** Foot 
 #+begin_src css :tangle ./code/css/chat.css :mkdirp yes
   .foot {

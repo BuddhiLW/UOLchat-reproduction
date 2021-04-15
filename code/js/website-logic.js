@@ -11,9 +11,11 @@ var cons = e => c => e.classList.add(c);
 
 let createMsg = message => document.createTextNode(message);
 let appendMsgNode = e => nodeMessage => e.appendChild(nodeMessage);  
-let populate = message =>
+let populate = obj =>
     {let li = createElement('li');
-     appendMsgNode(li)(createMsg(message));
+     let list = mapKeys(obj);
+     // li.appendChild(list[3]);
+     orderAppendMsg(li)(list);
      chat.appendChild(li);
     };
 
@@ -26,11 +28,14 @@ var msgKeys = ["from", "to", "text", "type", "time"];
 let keys = obj => Object.keys(obj);
 let dataPerform = data => {console.log(keys(data.data[0]));
                            console.log(data.data[0]);
+                           console.log(mapKeys(data.data[0]));
+                           populate(data.data[0]);
                           };
 let errorHandle = error => console.log(error);
 handleChat('https://mock-api.bootcamp.respondeai.com.br/api/v2/uol/messages');
 
 let assignId = e => identity => e.id = `${identity}`;
+let assignClass = e => c => e.classList.add(c);
 let spanNodeId = id =>
     {let span = createElement('span');
      assignId(span)(id);
@@ -42,12 +47,30 @@ let createContent = id => content =>
      populateNode(span)(content);
      return span;
     };
+let spanNodeClass = c =>
+    {let span = createElement('span');
+     assignClass(span)(c);
+     return span;
+    };
+let createContentClass = c => content =>
+    {let span = spanNodeClass(c);
+     populateNode(span)(content);
+     return span;
+    };
 
-let add = a => b => a+b;
 let mapKeys = object => {
     newList = [];
-    Object.entries(object).forEach(e => newList.push(createContent(e[0])(e[1])));
+    Object.entries(object).forEach(e => newList.push(createContentClass(e[0])(e[1])));
     return newList;
 };
 
-
+let orderAppendMsg = li => list =>
+    {li.innerHTML += "(";
+     li.appendChild(list[4]);
+     li.innerHTML +=")";
+     li.appendChild(list[0]);
+     li.innerHTML += "&nbsp; para";
+     li.appendChild(list[1]);
+     li.innerHTML += ":";
+     li.appendChild(list[2]);
+    };
