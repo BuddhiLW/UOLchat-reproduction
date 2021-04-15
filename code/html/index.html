@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="../css/reset.css" rel="stylesheet"/>
     <link href="../css/chat.css" rel="stylesheet" />
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -18,16 +19,22 @@
       <div class="menu-chat"></div>
     </div>
 
-<div class="chat"></div>
+<ul class="chat">
+    <li class="event">event mensagem</li>
+    <li class="all"> <span id="time">(09:22:28)</span> <span class="sender">João</span> <span class="to">para</span> <span class="recipient">Todos</span>: Bom dia</li>
+    <li class="private">private message</li>
+</ul>
 
 <div class="foot">
-  <input class="message" type="text" placeholder="Let's chat!">
-  <div class="send">
-    <ion-icon name="send"></ion-icon>
-  </div>
+    <input class="message" type="text" placeholder="Let's chat!">
+    <div class="send">
+        <ion-icon name="send"></ion-icon>
+    </div>
 </div>
 
 </div>
+<script src="../js/website-logic.js"></script>
 <script src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>
 </body>
+
 </html>

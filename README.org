@@ -11,8 +11,31 @@ This project intend to reproduce the UOL-chat experience. It's a challenge-exerc
 =c= or =p= denotes class or property; both will be used interchangebly.
 
 * Javascript
-#+begin_src js
+** Useful functions to append a list of elements in a HTML document
+#+begin_src js :tangle ./code/js/website-logic.js :mkdirp yes
+alert();
+  var querier = (e) => document.querySelector(e);
+  var populateWith = (e) => (c) => e.appendChild(c.cloneNode(true));
 
+  var chat = querier('.chat');
+  let createElement = e => document.createElement(e);
+  var querierAll = s => document.querySelectorAll(s);
+
+  var remover = e => c => e.classList.remove(c);
+  var cons = e => c => e.classList.add(c);
+#+end_src
+** Populate chat
+
+We are imagining that the message is purely a string-type message. So, our populate-function will be expecting that.
+
+#+begin_src js ./code/js/website-logic.js :mkdirp yes
+  let createMsg = message => document.createTextNode(message);
+  let appendMsgNode = e => nodeMessage => e.appendChild(nodeMessage);  
+  let populate = message =>
+      {let li = createElement('li');
+       appendMsgNode(li)(createMsg(message));
+       chat.appendChild(li);
+      };
 #+end_src
 
 * HTML
@@ -25,6 +48,7 @@ This project intend to reproduce the UOL-chat experience. It's a challenge-exerc
       <meta charset="utf-8">
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
       <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link href="../css/reset.css" rel="stylesheet"/>
       <link href="../css/chat.css" rel="stylesheet" />
       <link rel="preconnect" href="https://fonts.gstatic.com">
       <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -45,21 +69,27 @@ This project intend to reproduce the UOL-chat experience. It's a challenge-exerc
 
 *** Chat body
 #+begin_src html :tangle ./code/html/index.html
-  <div class="chat"></div>
+  <ul class="chat">
+      <li class="event">event mensagem</li>
+      <li class="all"> <span id="time">(09:22:28)</span> <span class="sender">João</span> <span class="to">para</span> <span class="recipient">Todos</span>: Bom dia</li>
+      <li class="private">private message</li>
+  </ul>
 #+end_src
 
 *** Send-message foot
 #+begin_src html :tangle ./code/html/index.html
   <div class="foot">
-    <input class="message" type="text" placeholder="Let's chat!">
-    <div class="send">
-      <ion-icon name="send"></ion-icon>
-    </div>
+      <input class="message" type="text" placeholder="Let's chat!">
+      <div class="send">
+          <ion-icon name="send"></ion-icon>
+      </div>
   </div>
 
   </div>
+  <script src="../js/website-logic.js"></script>
   <script src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>
   </body>
+
   </html>
 #+end_src
 
@@ -68,7 +98,7 @@ This project intend to reproduce the UOL-chat experience. It's a challenge-exerc
 *** Body
 #+begin_src css :tangle ./code/css/chat.css :mkdirp yes
   body {
-      background-color: whitesmoke;
+      background-color: lightpink;
       display: flex;
       align-content: center;
       z-index: -1;
@@ -76,12 +106,15 @@ This project intend to reproduce the UOL-chat experience. It's a challenge-exerc
   }
 
   .project-container {
-      background-color: #E5E5E5;
+      background-color: #f3f3f3;
       display: flex;
+      flex-direction: column;
       margin: 30px auto 0 auto;
       width: 375px;
       height: 667px;
       position: relative;
+      border: 0px solid #f3f3f3;
+      boder-radius: 3px;
   }
 #+end_src
 
@@ -93,7 +126,6 @@ This project intend to reproduce the UOL-chat experience. It's a challenge-exerc
       flex: wrap;
       justify-concent: space-between;
       align-items: center;
-      /* border: 1px solid #c3c3c3; */
       height: 80px;
       width: 100%;
       background-color: #FFFFFF;
@@ -119,25 +151,52 @@ This project intend to reproduce the UOL-chat experience. It's a challenge-exerc
 
 *** Chat-body
 #+begin_src css :tangle ./code/css/chat.css :mkdirp yes
-  .chat p* {
-      border-radius: 2px;
+  ul {
+      position: relative;
+      top: 80px;
+      width: 100%;
+      height: 507px;
+      display: flex;
+      flex-wrap: wrap;
+      flex-direction: column;
   }
 
-  .chat p#event {
+  li {
+      width: calc(100% - 16px);
+      height: 40px;
+      border-radius: 2px;
+      display: flex;
+      font-size: 14px;
+      line-height: 16px;
+      align-items: center;
+      margin-bottom: 4px;
+      padding-right: 8px;
+      padding-left: 8px;
+  }
+
+  li:first-of-type {
+      margin-top: 26px;
+  }
+
+  li.event {
       background-color: #DCDCDC;
   }
 
-  .chat p#all {
+  li.all {
       background-color: #FFF;
   }
 
-  .chat p#private {
+  li.private {
       background: #FFDEDE;
+  }
+
+  li span{
+      margin-left:3px;
+      margin-right: 0px;
   }
 #+end_src
 
 *** Foot 
-
 #+begin_src css :tangle ./code/css/chat.css :mkdirp yes
   .foot {
       left: 0;
@@ -172,4 +231,139 @@ This project intend to reproduce the UOL-chat experience. It's a challenge-exerc
       margin: 27px 18px 27px 14px;
       display: inline-block;
   }
+#+end_src
+
+**  Reset
+
+#+begin_src css :tangle ./code/css/reset.css :mkdirp yes
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+
+/* HTML5 display-role reset for older browsers */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+    display: block;
+}
+
+body {
+    line-height: 1;
+}
+
+ol,
+ul {
+    list-style: none;
+}
+
+blockquote,
+q {
+    quotes: none;
+}
+
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+    content: '';
+    content: none;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
 #+end_src
