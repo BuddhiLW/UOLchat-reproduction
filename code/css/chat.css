@@ -3,7 +3,7 @@ body {
     display: flex;
     align-content: center;
     z-index: -1;
-    font-family: 'Roboto', sans-serif;
+    font-family: Roboto, sans-serif;
 }
 
 .project-container {
@@ -49,11 +49,13 @@ body {
 ul {
     position: relative;
     top: 80px;
-    width: 100%;
+    width: 375px;
     height: 507px;
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
+    overflow-y: scroll;
+    font-family: Roboto, sans-serif;
 }
 
 li {
@@ -68,6 +70,7 @@ li {
     margin-bottom: 4px;
     padding-right: 8px;
     padding-left: 8px;
+    overflow-wrap: break-word;
 }
 
 li:first-of-type {
@@ -91,6 +94,18 @@ li span {
     margin-right: 0px;
 }
 
+.time {
+    color: #b5b5b5;
+}
+
+.from {
+    font-weight: 700;
+}
+
+.to {
+    font-weight: 700;
+}
+
 .foot {
     left: 0;
     bottom: 0;
@@ -103,8 +118,10 @@ li span {
     height: 80px;
     background-color: #fff;
     box-shadow: 0px -4px 6px rgb(0, 0, 0, 0.05);
+    font-family: Roboto, sans-serif;
 }
-.foot ::placeholder{
+
+.foot ::placeholder {
     font-style: italic;
     font-weight: 400;
     color: #000;
@@ -115,6 +132,11 @@ li span {
     width: calc(100% - 26px - 25px - 27px);
     margin: 25px 14px 25px 17px;
     display: inline-block;
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 21px;
 }
 
 

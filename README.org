@@ -26,15 +26,23 @@ This project intend to reproduce the UOL-chat experience. It's a challenge-exerc
 #+end_src
 ** Populate chat
 *** Populate [obj-> html]
-We are imagining that the message is purely a string-type message. So, our populate-function will be expecting that.
+We are imagining that the message is purely obj with =key:content=. So, our populate-function will be expecting that.
 
 #+begin_src js ./code/js/website-logic.js :mkdirp yes
   let createMsg = message => document.createTextNode(message);
-  // let appendMsgNode = e => nodeMessage => e.appendChild(nodeMessage);  
+  let appendMsgNode = e => nodeMessage => e.appendChild(nodeMessage);  
   let populate = obj =>
       {let li = createElement('li');
        let list = mapKeys(obj);
-       msgClass(li)(list[3]);
+       assignClass(li)(list[3].textContent);
+       orderAppendMsg(li)(list);
+       chat.appendChild(li);
+      };
+  let populateWithId = obj =>
+      {let li = createElement('li');
+       let list = mapKeys(obj);
+       assignClass(li)(list[3].textContent);
+       assignId(li)("last");
        orderAppendMsg(li)(list);
        chat.appendChild(li);
       };
@@ -56,10 +64,13 @@ Requirement: =Ao entrar no site, este deve carregar as mensagens do servidor e e
       };
   var msgKeys = ["from", "to", "text", "type", "time"];
   let keys = obj => Object.keys(obj);
-  let dataPerform = data => {console.log(keys(data.data[0]));
-                             console.log(data.data[0]);
-                             console.log(mapKeys(data.data[0]));
-                             populate(data.data[0]);
+  let dataPerform = data => {let dataArray = data.data;
+                             let lastThirty = dataArray.slice(Math.max(dataArray.length - 30, 1));
+                             lastThirty.forEach((messageData, i) =>
+                                 (i !== lastThirty.length - 1) ?
+                                     populate(messageData) :
+                                     populateWithId(messageData));
+                             focus();
                             };
   let errorHandle = error => console.log(error);
   handleChat('https://mock-api.bootcamp.respondeai.com.br/api/v2/uol/messages');
@@ -115,9 +126,21 @@ Requirement: =Ao entrar no site, este deve carregar as mensagens do servidor e e
       };
 #+end_src
 
-**** Caracterize the message type, and assign a class to the =li= father
+** Populate every 3 seconds
 #+begin_src js 
+  function refreshData(){
+      let seconds = 3; 
+      let ul = querier('ul');
+      ul.innerHTML = ""; 
+      handleChat('https://mock-api.bootcamp.respondeai.com.br/api/v2/uol/messages');
+      setTimeout(refreshData, seconds*1000);
+  }
+  // refreshData();
+#+end_src
 
+** Focus on the last chat message
+#+begin_src js 
+  let focus = () => querier('#last').scrollIntoView();  
 #+end_src
 
 * HTML
@@ -152,9 +175,6 @@ Requirement: =Ao entrar no site, este deve carregar as mensagens do servidor e e
 *** Chat body
 #+begin_src html :tangle ./code/html/index.html
   <ul class="chat">
-      <li class="status">event mensagem</li>
-      <li class="message" > <span class="time">(09:22:28)</span> <span class="sender">João</span> <span class="to">para</span> <span class="recipient">Todos</span>: Bom dia</li>
-      <li class="private_message">private message</li>
   </ul>
 #+end_src
 
@@ -185,7 +205,7 @@ Requirement: =Ao entrar no site, este deve carregar as mensagens do servidor e e
       display: flex;
       align-content: center;
       z-index: -1;
-      font-family: 'Roboto', sans-serif;
+      font-family: Roboto, sans-serif;
   }
 
   .project-container {
@@ -237,11 +257,13 @@ Requirement: =Ao entrar no site, este deve carregar as mensagens do servidor e e
   ul {
       position: relative;
       top: 80px;
-      width: 100%;
+      width: 375px;
       height: 507px;
       display: flex;
       flex-wrap: wrap;
       flex-direction: column;
+      overflow-y: scroll;
+      font-family: Roboto, sans-serif;
   }
 
   li {
@@ -256,6 +278,7 @@ Requirement: =Ao entrar no site, este deve carregar as mensagens do servidor e e
       margin-bottom: 4px;
       padding-right: 8px;
       padding-left: 8px;
+      overflow-wrap: break-word;
   }
 
   li:first-of-type {
@@ -279,6 +302,21 @@ Requirement: =Ao entrar no site, este deve carregar as mensagens do servidor e e
       margin-right: 0px;
   }
 #+end_src
+
+**** Chat-markdown
+#+begin_src css :tangle ./code/css/chat.css
+  .time {
+      color: #b5b5b5;
+  }
+
+  .from {
+      font-weight: 700;
+  }
+
+  .to {
+      font-weight: 700;
+  }
+#+end_src
 *** Foot 
 #+begin_src css :tangle ./code/css/chat.css :mkdirp yes
   .foot {
@@ -293,8 +331,10 @@ Requirement: =Ao entrar no site, este deve carregar as mensagens do servidor e e
       height: 80px;
       background-color: #fff;
       box-shadow: 0px -4px 6px rgb(0, 0, 0, 0.05);
+      font-family: Roboto, sans-serif;
   }
-  .foot ::placeholder{
+
+  .foot ::placeholder {
       font-style: italic;
       font-weight: 400;
       color: #000;
@@ -305,6 +345,11 @@ Requirement: =Ao entrar no site, este deve carregar as mensagens do servidor e e
       width: calc(100% - 26px - 25px - 27px);
       margin: 25px 14px 25px 17px;
       display: inline-block;
+      font-family: Roboto;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 18px;
+      line-height: 21px;
   }
 
 

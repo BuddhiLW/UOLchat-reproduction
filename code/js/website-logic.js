@@ -14,7 +14,15 @@ let appendMsgNode = e => nodeMessage => e.appendChild(nodeMessage);
 let populate = obj =>
     {let li = createElement('li');
      let list = mapKeys(obj);
-     // li.appendChild(list[3]);
+     assignClass(li)(list[3].textContent);
+     orderAppendMsg(li)(list);
+     chat.appendChild(li);
+    };
+let populateWithId = obj =>
+    {let li = createElement('li');
+     let list = mapKeys(obj);
+     assignClass(li)(list[3].textContent);
+     assignId(li)("last");
      orderAppendMsg(li)(list);
      chat.appendChild(li);
     };
@@ -26,10 +34,13 @@ let handleChat = api =>
     };
 var msgKeys = ["from", "to", "text", "type", "time"];
 let keys = obj => Object.keys(obj);
-let dataPerform = data => {console.log(keys(data.data[0]));
-                           console.log(data.data[0]);
-                           console.log(mapKeys(data.data[0]));
-                           populate(data.data[0]);
+let dataPerform = data => {let dataArray = data.data;
+                           let lastThirty = dataArray.slice(Math.max(dataArray.length - 30, 1));
+                           lastThirty.forEach((messageData, i) =>
+                               (i !== lastThirty.length - 1) ?
+                                   populate(messageData) :
+                                   populateWithId(messageData));
+                           focus();
                           };
 let errorHandle = error => console.log(error);
 handleChat('https://mock-api.bootcamp.respondeai.com.br/api/v2/uol/messages');
@@ -74,3 +85,14 @@ let orderAppendMsg = li => list =>
      li.innerHTML += ":";
      li.appendChild(list[2]);
     };
+
+function refreshData(){
+    let seconds = 3; 
+    let ul = querier('ul');
+    ul.innerHTML = ""; 
+    handleChat('https://mock-api.bootcamp.respondeai.com.br/api/v2/uol/messages');
+    setTimeout(refreshData, seconds*1000);
+}
+// refreshData();
+
+let focus = () => querier('#last').scrollIntoView();
