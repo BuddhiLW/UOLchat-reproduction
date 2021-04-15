@@ -13,7 +13,7 @@ This project intend to reproduce the UOL-chat experience. It's a challenge-exerc
 * Javascript
 ** Useful functions to append a list of elements in a HTML document
 #+begin_src js :tangle ./code/js/website-logic.js :mkdirp yes
-alert();
+  alert();
   var querier = (e) => document.querySelector(e);
   var populateWith = (e) => (c) => e.appendChild(c.cloneNode(true));
 
@@ -25,7 +25,7 @@ alert();
   var cons = e => c => e.classList.add(c);
 #+end_src
 ** Populate chat
-
+*** Populate [string -> html]
 We are imagining that the message is purely a string-type message. So, our populate-function will be expecting that.
 
 #+begin_src js ./code/js/website-logic.js :mkdirp yes
@@ -36,6 +36,60 @@ We are imagining that the message is purely a string-type message. So, our popul
        appendMsgNode(li)(createMsg(message));
        chat.appendChild(li);
       };
+#+end_src
+
+*** Load page
+**** Requirements doc
+Requirement: =Ao entrar no site, este deve carregar as mensagens do servidor e exibi-las conforme layout fornecido.=
+#+caption: Load messages request documentation
+#+ATTR_ORG: :width 400
+[[file:./content/doc/getMessages.png]]
+
+**** Here we get the messages-data from the server.
+#+begin_src js
+  let handleChat = api =>
+      {let promisseChat = axios.get(api);
+       promisseChat.then(dataPerform);
+       promisseChat.catch(errorHandle);
+      };
+  var msgKeys = ["from", "to", "text", "type", "time"];
+  let keys = obj => Object.keys(obj);
+  let dataPerform = data => {console.log(keys(data.data[0]));
+                             console.log(data.data[0]);
+                            };
+  let errorHandle = error => console.log(error);
+  handleChat('https://mock-api.bootcamp.respondeai.com.br/api/v2/uol/messages');
+#+end_src
+
+**** Generate span with id
+#+begin_src js 
+  let assignId = e => identity => e.id = `${identity}`;
+  let spanNodeId = id =>
+      {let span = createElement('span');
+       assignId(span)(id);
+       return span;
+      };
+  let populateNode = node => content => appendMsgNode(node)(createMsg(content));
+  let createContent = id => content =>
+      {let span = spanNodeId(id);
+       populateNode(span)(content);
+       return span;
+      };
+#+end_src
+
+**** Span for each msgKey
+#+begin_src js
+  let add = a => b => a+b;
+  let mapKeys = object => {
+      newList = [];
+      Object.entries(object).forEach(e => newList.push(createContent(e[0])(e[1])));
+      return newList;
+  };
+#+end_src
+
+**** Reduce the list of spans to a usable string
+#+begin_src js 
+
 #+end_src
 
 * HTML
@@ -71,7 +125,7 @@ We are imagining that the message is purely a string-type message. So, our popul
 #+begin_src html :tangle ./code/html/index.html
   <ul class="chat">
       <li class="event">event mensagem</li>
-      <li class="all"> <span id="time">(09:22:28)</span> <span class="sender">João</span> <span class="to">para</span> <span class="recipient">Todos</span>: Bom dia</li>
+      <li class="all"> <span class="time">(09:22:28)</span> <span class="sender">João</span> <span class="to">para</span> <span class="recipient">Todos</span>: Bom dia</li>
       <li class="private">private message</li>
   </ul>
 #+end_src
@@ -79,15 +133,16 @@ We are imagining that the message is purely a string-type message. So, our popul
 *** Send-message foot
 #+begin_src html :tangle ./code/html/index.html
   <div class="foot">
-      <input class="message" type="text" placeholder="Let's chat!">
-      <div class="send">
-          <ion-icon name="send"></ion-icon>
-      </div>
+    <input class="message" type="text" placeholder="Let's chat!">
+    <div class="send">
+      <ion-icon name="send"></ion-icon>
+    </div>
   </div>
 
   </div>
-  <script src="../js/website-logic.js"></script>
   <script src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="../js/website-logic.js"></script>
   </body>
 
   </html>
