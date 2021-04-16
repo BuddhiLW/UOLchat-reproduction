@@ -124,9 +124,11 @@ Requirement: =Ao entrar no site, este deve carregar as mensagens do servidor e e
        li.innerHTML += ":";
        li.appendChild(list[2]);
       };
+
+  let sliceBigString = string => (string.length > 28 ? string.slice(0,28) : string);
 #+end_src
 
-** Populate every 3 seconds
+*** Populate every 3 seconds
 #+begin_src js 
   function refreshData(){
       let seconds = 3; 
@@ -135,13 +137,56 @@ Requirement: =Ao entrar no site, este deve carregar as mensagens do servidor e e
       handleChat('https://mock-api.bootcamp.respondeai.com.br/api/v2/uol/messages');
       setTimeout(refreshData, seconds*1000);
   }
-  // refreshData();
+  refreshData();
 #+end_src
 
-** Focus on the last chat message
+*** Focus on the last chat message
 #+begin_src js 
   let focus = () => querier('#last').scrollIntoView();  
 #+end_src
+
+** Prompt-user function
+#+begin_src js
+  let userName = () =>
+      {let user = prompt("What's your nick-name?");
+       user = {name: user};
+       console.log(user);
+       userPresence(user)("https://mock-api.bootcamp.respondeai.com.br/api/v2/uol/participants");
+      };
+#+end_src
+
+*** Handle server-user interaction
+#+begin_src js
+  function refresherLogin(userObj){
+      let seconds = 5;
+      let refreshLogin = () => {
+          axiosPost(userObj)("https://mock-api.bootcamp.respondeai.com.br/api/v2/uol/status");
+      };
+      setInterval(refreshLogin, seconds*1000);
+  };
+
+  let axiosPost = userObj => api => axios.post(api,userObj);
+  let userPresence = userObj => api => 
+      {let promisseUser = axiosPost(userObj)(api);
+       let maintainUser = refresherLogin(userObj);
+       // let maintainLogin = () => setInterval(axiosPost(userObj)(api), 5000);
+       promisseUser.then(maintainUser);
+       promisseUser.catch(errorHandleName);
+      };
+  let errorHandleName = () =>
+      {prompt("This name is already in use, try another");
+       userName();
+      };
+
+#+end_src
+
+*** Call for the prompt-user function
+#+begin_src js 
+  userName();
+#+end_src
+
+
+** 
 
 * HTML
 ** Head of the document

@@ -86,6 +86,8 @@ let orderAppendMsg = li => list =>
      li.appendChild(list[2]);
     };
 
+let sliceBigString = string => (string.length > 28 ? string.slice(0,28) : string);
+
 function refreshData(){
     let seconds = 3; 
     let ul = querier('ul');
@@ -93,6 +95,36 @@ function refreshData(){
     handleChat('https://mock-api.bootcamp.respondeai.com.br/api/v2/uol/messages');
     setTimeout(refreshData, seconds*1000);
 }
-// refreshData();
+refreshData();
 
 let focus = () => querier('#last').scrollIntoView();
+
+let userName = () =>
+    {let user = prompt("What's your nick-name?");
+     user = {name: user};
+     console.log(user);
+     userPresence(user)("https://mock-api.bootcamp.respondeai.com.br/api/v2/uol/participants");
+    };
+
+function refresherLogin(userObj){
+    let seconds = 5;
+    let refreshLogin = () => {
+        axiosPost(userObj)("https://mock-api.bootcamp.respondeai.com.br/api/v2/uol/status");
+    };
+    setInterval(refreshLogin, seconds*1000);
+};
+
+let axiosPost = userObj => api => axios.post(api,userObj);
+let userPresence = userObj => api => 
+    {let promisseUser = axiosPost(userObj)(api);
+     let maintainUser = refresherLogin(userObj);
+     // let maintainLogin = () => setInterval(axiosPost(userObj)(api), 5000);
+     promisseUser.then(maintainUser);
+     promisseUser.catch(errorHandleName);
+    };
+let errorHandleName = () =>
+    {prompt("This name is already in use, try another");
+     userName();
+    };
+
+userName();
