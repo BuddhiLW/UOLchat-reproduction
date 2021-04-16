@@ -1,4 +1,5 @@
-alert();
+// let name = "";
+
 var querier = (e) => document.querySelector(e);
 var populateWith = (e) => (c) => e.appendChild(c.cloneNode(true));
 
@@ -100,10 +101,9 @@ refreshData();
 let focus = () => querier('#last').scrollIntoView();
 
 let userName = () =>
-    {let user = prompt("What's your nick-name?");
-     user = {name: user};
-     console.log(user);
-     userPresence(user)("https://mock-api.bootcamp.respondeai.com.br/api/v2/uol/participants");
+    {var name = prompt("What's your nick-name?");
+     nameObj = {name: name};
+     userPresence(nameObj)("https://mock-api.bootcamp.respondeai.com.br/api/v2/uol/participants");
     };
 
 function refresherLogin(userObj){
@@ -118,7 +118,6 @@ let axiosPost = userObj => api => axios.post(api,userObj);
 let userPresence = userObj => api => 
     {let promisseUser = axiosPost(userObj)(api);
      let maintainUser = refresherLogin(userObj);
-     // let maintainLogin = () => setInterval(axiosPost(userObj)(api), 5000);
      promisseUser.then(maintainUser);
      promisseUser.catch(errorHandleName);
     };
@@ -128,3 +127,50 @@ let errorHandleName = () =>
     };
 
 userName();
+
+//POST https://mock-api.bootcamp.respondeai.com.br/api/v2/uol/messages
+
+var sendIcon = querier('.sendIcon');
+var messageInput = querier('.message');
+
+var to = new RegExp('/to ', 'i');
+let sendMsgClick = nameObj => e => {
+    let textInput = messageInput.value;
+    let matchPosition = textInput.search(to);
+    console.log(nameObj);
+    console.log(nameObj.name);
+    let info = {from : nameObj.name};
+    console.log(info);
+    (matchPosition === 0 ?
+        catchTo(textInput)(info) :
+        all(textInput)(info)
+    );
+    console.log(info);
+    axiosPost(info)("https://mock-api.bootcamp.respondeai.com.br/api/v2/uol/messages");
+};
+let sendMsgKey = nameObj => e =>
+    (event.keyCode === 13 ?
+     sendMsgClick(nameObj)() :
+     null);
+
+
+let catchTo = textMsg => info => {
+    console.log(info + "inside catchTo");
+    info.to = textMsg.match(/(?<=\/to )\w*/)[0];
+    let nameSize = info.to.length;
+    let beginMsg = (nameSize + 4);
+    info.type = "private_message";
+    info.text = textMsg.slice(beginMsg);
+};
+let all = textMsg => info => {
+    info.to = "Todos";
+    info.type = "message";
+    info.text = textMsg;
+};
+
+let beginText = (nameObj) => {
+    sendIcon.addEventListener("click", sendMsgClick(nameObj));
+    messageInput.addEventListener("keyup", sendMsgKey(nameObj));
+};
+
+beginText(nameObj);
